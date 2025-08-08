@@ -227,9 +227,14 @@ function Dashboard({ onLogout }) {
     const updateNote = async (e) => {
         e.preventDefault()
         try {
+            const token = localStorage.getItem('authToken');
+            
             const response = await fetch(`${API_BASE_URL}/notes/${editingId}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 credentials: 'include',
                 body: JSON.stringify({ newTitle: editTitle, newBody: editBody })
             })
@@ -240,16 +245,25 @@ function Dashboard({ onLogout }) {
                 setEditingId(null)
                 fetchNotes()
                 showMessage('Note updated successfully!', 'success')
+            } else {
+                showMessage('Failed to update note', 'error')
             }
         } catch (error) {
             console.log('Error updating note:', error)
+            showMessage('Error updating note', 'error')
         }
     }
 
     const deleteNote = async (noteId) => {
         try {
+            const token = localStorage.getItem('authToken');
+            
             const response = await fetch(`${API_BASE_URL}/notes/${noteId}`, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'include'
             })
             const data = await response.json()
@@ -259,6 +273,7 @@ function Dashboard({ onLogout }) {
             }
         } catch (error) {
             console.log('Error deleting note:', error)
+            showMessage('Error deleting note', 'error')
         }
     }
 
@@ -274,14 +289,11 @@ function Dashboard({ onLogout }) {
                 },
                 credentials: 'include'
             })
-            
-            localStorage.removeItem('authToken'); 
-            localStorage.removeItem('theme'); 
-            onLogout()
         } catch (error) {
             console.log('Logout error:', error)
-            localStorage.removeItem('authToken'); 
-            localStorage.removeItem('theme')
+        } finally {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('theme');
             onLogout()
         }
     }

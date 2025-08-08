@@ -87,16 +87,20 @@ const loginUser= async(req,res)=>{
             process.env.JWT_SECRET,
             {expiresIn: process.env.JWT_EXPIRATION}
         )
+        
         const options = {
-            httpOnly:true,
-            maxAge:7 * 24 * 60 * 60 * 1000,
-            secure:true
+            httpOnly: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
         }
+        
         const loggedInUser = {
             _id: user._id,
             username: user.username,
             email: user.email
         }
+        
         return res.status(200)
         .cookie('token', token, options)
         .json({
@@ -114,25 +118,34 @@ const loginUser= async(req,res)=>{
     }
 }
 
-const authCheck=async(req,res)=>{
+const authCheck = async(req,res) => {
     try {
-        const token=req.cookies.token; 
-        if (!token) 
-        {
+        const token = req.cookies.token || req.headers.authorization?.replace('Bearer ', '');
+        
+        if (!token) {
             return res.status(401).json({ success: false, message: "No token found" });
         }
-        const decoded=jwt.verify(token,process.env.JWT_SECRET)
-        if(!decoded)
-        {
+        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        if(!decoded) {
             return res.status(401).json({
-                    success:false,
-                    message:"User not logged in"
+                success: false,
+                message: "Invalid token"
             })
         }
-        return res.status(200).json({success:true,message:"User is logged in"})
+        
+        return res.status(200).json({
+            success: true, 
+            message: "User is authenticated",
+            userId: decoded.userId
+        })
     } 
     catch (error) {
-        return res.status(400).json({success:false,message:error.message})
+        return res.status(401).json({
+            success: false, 
+            message: "Token verification failed"
+        })
     }
 }
 

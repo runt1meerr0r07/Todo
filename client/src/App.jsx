@@ -11,15 +11,15 @@ function App() {
   const [loading, setLoading] = useState(true)
 
   const checkAuth = async () => {
+    const token = localStorage.getItem('authToken');
+    
+    if (!token) {
+      setIsLoggedIn(false);
+      setLoading(false);
+      return;
+    }
+    
     try {
-      const token = localStorage.getItem('authToken');
-      
-      if (!token) {
-        setIsLoggedIn(false);
-        setLoading(false);
-        return;
-      }
-      
       const response = await fetch(`${API_BASE_URL}/auth/check`, {
         method: 'GET',
         headers: {
@@ -31,7 +31,12 @@ function App() {
       
       if (response.ok) {
         const data = await response.json()
-        setIsLoggedIn(data.success)
+        if (data.success) {
+          setIsLoggedIn(true)
+        } else {
+          localStorage.removeItem('authToken');
+          setIsLoggedIn(false);
+        }
       } else {
         localStorage.removeItem('authToken');
         setIsLoggedIn(false);
@@ -39,8 +44,8 @@ function App() {
     } 
     catch (error) 
     {
+      localStorage.removeItem('authToken');
       setIsLoggedIn(false)
-      localStorage.removeItem('authToken'); 
       console.log('Auth check failed:', error)
     } 
     finally 
@@ -59,7 +64,7 @@ function App() {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken'); 
+    localStorage.removeItem('authToken');
     setIsLoggedIn(false)
   }
 
@@ -69,9 +74,16 @@ function App() {
 
   if (loading) {
     return (
-      <div className="loading-screen">
-        <div className="loading-spinner">📋</div>
-        <p>Loading...</p>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        fontFamily: 'system-ui'
+      }}>
+        <div style={{ fontSize: '48px', marginBottom: '16px' }}>📋</div>
+        <p>Loading TodoTrial...</p>
       </div>
     )
   }
@@ -81,7 +93,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div>
       {showRegister ? (
         <Register 
           onRegisterSuccess={handleRegisterSuccess} 
