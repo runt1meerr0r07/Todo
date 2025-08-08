@@ -6,14 +6,20 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "build": "echo 'No build step required'"
+    "build": "echo 'Build completed successfully'"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "18.x"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "Notes app backend with authentication",
+  "author": "runt1meerror07",
+  "description": "Full-stack notes app with authentication, drawing, and theme support",
+  "keywords": [
+    "notes",
+    "react",
+    "nodejs",
+    "mongodb",
+    "express"
+  ],
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",

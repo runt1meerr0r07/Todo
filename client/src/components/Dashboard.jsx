@@ -16,6 +16,8 @@ function Dashboard({ onLogout }) {
     const [showCanvas, setShowCanvas] = useState(false)
     const [selectedImage, setSelectedImage] = useState(null)
     const [viewingNote, setViewingNote] = useState(null)
+    const [message, setMessage] = useState('')
+    const [messageType, setMessageType] = useState('') 
     
     const canvasRef = useRef(null)
     const isDrawing = useRef(false)
@@ -164,10 +166,12 @@ function Dashboard({ onLogout }) {
                 if (canvasRef.current) clearCanvas()
                 if (fileInputRef.current) fileInputRef.current.value = ''
                 fetchNotes()
+                showMessage('Note created successfully!', 'success')
             }
         } catch (error) {
             console.log('Error creating note:', error)
-            alert('Failed to create note. Please try again.')
+            setMessage('Failed to create note. Please try again.')
+            showMessage('Failed to create note. Please try again.', 'error')
         }
     }
 
@@ -181,6 +185,7 @@ function Dashboard({ onLogout }) {
             if (data.success) setNotes(data.data)
         } catch (error) {
             console.log('Error fetching notes:', error)
+            showMessage('Failed to load notes. Please refresh the page.', 'error')
         } finally {
             setLoading(false)
         }
@@ -212,6 +217,7 @@ function Dashboard({ onLogout }) {
                 setEditBody('')
                 setEditingId(null)
                 fetchNotes()
+                showMessage('Note updated successfully!', 'success')
             }
         } catch (error) {
             console.log('Error updating note:', error)
@@ -225,7 +231,10 @@ function Dashboard({ onLogout }) {
                 credentials: 'include'
             })
             const data = await response.json()
-            if (data.success) fetchNotes()
+            if (data.success) {
+                fetchNotes()
+                showMessage('Note deleted successfully!', 'success')
+            }
         } catch (error) {
             console.log('Error deleting note:', error)
         }
@@ -239,11 +248,26 @@ function Dashboard({ onLogout }) {
             })
             localStorage.removeItem('theme')
             onLogout()
+            showMessage('Logged out successfully!', 'success')
         } catch (error) {
             console.log('Logout error:', error)
             localStorage.removeItem('theme')
             onLogout()
         }
+    }
+
+    const showMessage = (text, type = 'info') => {
+        setMessage(text)
+        setMessageType(type)
+        setTimeout(() => {
+            setMessage('')
+            setMessageType('')
+        }, 4000)
+    }
+
+    const hideMessage = () => {
+        setMessage('')
+        setMessageType('')
     }
 
     return (
@@ -277,6 +301,19 @@ function Dashboard({ onLogout }) {
                     </div>
                 </div>
             </header>
+
+            {message && (
+                <div className={`message-toast message-${messageType}`}>
+                    <span className="message-text">{message}</span>
+                    <button 
+                        className="message-close" 
+                        onClick={hideMessage}
+                        aria-label="Close message"
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
 
             <main className="main-content">
                 <div className="note-form">

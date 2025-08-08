@@ -193,7 +193,7 @@ body {
 
 .note-input {
   height: 48px;
-  font-size: 18px !important; /* Increased from default */
+  font-size: 18px !important; 
   font-weight: 500;
   border-radius: 8px;
 }
@@ -580,38 +580,140 @@ body {
   box-shadow: 0 4px 16px var(--shadow-light);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .notes-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .main-content {
-    padding: 16px;
-  }
-  
-  .header {
-    padding: 12px 16px;
-  }
-  
-  .modal-content {
-    padding: 20px;
-    margin: 10px;
-  }
-  
-  .modal-title {
-    font-size: 20px;
-  }
-  
-  .note-actions {
-    opacity: 1;
-    position: static;
-    margin-top: 12px;
-    justify-content: flex-end;
-  }
+/* Message Toast Styles */
+.message-toast {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    min-width: 320px;
+    max-width: 500px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px var(--shadow-medium);
+    backdrop-filter: blur(10px);
+    z-index: 1500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    animation: slideInRight 0.3s ease-out;
+    border-left: 4px solid;
+    font-weight: 500;
 }
 
-/* Theme transitions */
+.message-success {
+    background-color: rgba(76, 175, 80, 0.1);
+    border-left-color: #4caf50;
+    color: #2e7d32;
+}
+
+.message-error {
+    background-color: rgba(244, 67, 54, 0.1);
+    border-left-color: #f44336;
+    color: #c62828;
+}
+
+.message-info {
+    background-color: rgba(33, 150, 243, 0.1);
+    border-left-color: #2196f3;
+    color: #1565c0;
+}
+
+.message-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.message-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: currentColor;
+    opacity: 0.7;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.message-close:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Dark theme support */
+[data-theme="dark"] .message-success {
+    background-color: rgba(76, 175, 80, 0.15);
+    color: #81c784;
+}
+
+[data-theme="dark"] .message-error {
+    background-color: rgba(244, 67, 54, 0.15);
+    color: #ef5350;
+}
+
+[data-theme="dark"] .message-info {
+    background-color: rgba(33, 150, 243, 0.15);
+    color: #64b5f6;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .notes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .main-content {
+        padding: 16px;
+    }
+    
+    .header {
+        padding: 12px 16px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .modal-title {
+        font-size: 20px;
+    }
+    
+    .note-actions {
+        opacity: 1;
+        position: static;
+        margin-top: 12px;
+        justify-content: flex-end;
+    }
+
+    .message-toast {
+        right: 16px;
+        left: 16px;
+        min-width: auto;
+        max-width: none;
+        top: 70px;
+    }
+}
+
+
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

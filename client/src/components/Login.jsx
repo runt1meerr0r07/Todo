@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import '../design/Login.css'
-import bg from '../design/bg.jpg' // Add a background image if you want
+import bg from '../design/bg.jpg' 
 import API_BASE_URL from '../config.js'
 
 function Login({ onLoginSuccess, onSwitchToRegister }) {

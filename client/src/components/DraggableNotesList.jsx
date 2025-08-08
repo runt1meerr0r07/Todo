@@ -18,7 +18,6 @@ function DraggableNotesList({
     const [draggedOverIndex, setDraggedOverIndex] = useState(null)
     const [orderedNotes, setOrderedNotes] = useState(notes)
 
-    // Update ordered notes when props change
     useEffect(() => {
         setOrderedNotes(notes)
     }, [notes])
@@ -50,9 +49,8 @@ function DraggableNotesList({
         const newNotes = [...orderedNotes]
         const draggedNote = newNotes[draggedIndex]
         
-        // Remove dragged item
         newNotes.splice(draggedIndex, 1)
-        // Insert at new position
+
         newNotes.splice(dropIndex, 0, draggedNote)
         
         setOrderedNotes(newNotes)
