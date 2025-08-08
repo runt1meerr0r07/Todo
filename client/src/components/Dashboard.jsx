@@ -125,25 +125,31 @@ function Dashboard({ onLogout }) {
 
     const createNote = async (e) => {
         e.preventDefault()
-        
         if (!title && !body && !selectedImage && !showCanvas) {
             alert('Please add some content')
             return
         }
-        
+
         let drawingData = null
         if (showCanvas && canvasRef.current) {
             const canvas = canvasRef.current
             const ctx = canvas.getContext('2d')
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-            const hasDrawing = imageData.data.some((channel, index) => index % 4 === 3 && channel !== 0)
+            const hasDrawing = imageData.data.some((pixel, index) => 
+                index % 4 !== 3 && pixel !== 255
+            )
             if (hasDrawing) drawingData = canvas.toDataURL()
         }
         
         try {
+            const token = localStorage.getItem('authToken');
+            
             const response = await fetch(`${API_BASE_URL}/notes/create-note`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 credentials: 'include',
                 body: JSON.stringify({ 
                     title: title || 'Untitled', 
@@ -170,15 +176,20 @@ function Dashboard({ onLogout }) {
             }
         } catch (error) {
             console.log('Error creating note:', error)
-            setMessage('Failed to create note. Please try again.')
             showMessage('Failed to create note. Please try again.', 'error')
         }
     }
 
     const fetchNotes = async () => {
         try {
+            const token = localStorage.getItem('authToken');
+            
             const response = await fetch(`${API_BASE_URL}/notes/get-notes`, {
-                method: 'POST',
+                method: 'GET',  
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'include'
             })
             const data = await response.json()

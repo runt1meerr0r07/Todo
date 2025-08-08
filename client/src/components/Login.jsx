@@ -27,6 +27,9 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
             const data = await response.json()
             
             if (data.success) {
+                if (data.token) {
+                    localStorage.setItem('authToken', data.token);
+                }
                 onLoginSuccess()
             } else {
                 setMessage(data.message || 'Login failed')

@@ -98,13 +98,12 @@ const loginUser= async(req,res)=>{
             email: user.email
         }
         return res.status(200)
-        .cookie(
-            'token',token,options
-        )
+        .cookie('token', token, options)
         .json({
-            message:"Login Successful",
-            success:true,
-            data:loggedInUser
+            message: "Login Successful",
+            success: true,
+            token: token,
+            data: loggedInUser
         })
     
     } catch (error) {
