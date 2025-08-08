@@ -3,30 +3,45 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 const app = express()
 
+
 app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        "https://localhost:5173",
-        "https://todo-sooty-theta-97.vercel.app", 
-        "https://*.vercel.app" 
-    ],
+    origin: (origin, callback) => {
+        
+        if (!origin) return callback(null, true);
+        
+        if (origin.includes('localhost') || 
+            origin.includes('vercel.app') || 
+            origin.includes('onrender.com')) {
+            return callback(null, true);
+        }
+      
+        callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-    optionsSuccessStatus: 200 
+    optionsSuccessStatus: 200
 }))
+
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin && (origin.includes('localhost') || origin.includes('vercel.app') || origin.includes('onrender.com'))) {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie');
+    res.header('Access-Control-Allow-Methods', 'DELETE, GET, OPTIONS, PATCH, POST, PUT');
+    
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
 
 app.use(express.json({ limit: "50mb" }))
 app.use(express.urlencoded({ extended: true, limit: "50mb" }))
 app.use(cookieParser())
-
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control');
-    res.header('Access-Control-Allow-Methods', 'DELETE, GET, OPTIONS, PATCH, POST, PUT');
-    next();
-});
 
 app.get("/", (req, res) => {
     res.json({ 
