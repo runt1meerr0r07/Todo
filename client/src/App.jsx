@@ -1,6 +1,5 @@
 import { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
-import './App.css'
 import Login from './components/Login'
 import Register from './components/Register'
 import Dashboard from './components/Dashboard'
