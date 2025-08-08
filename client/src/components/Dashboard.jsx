@@ -224,12 +224,11 @@ function Dashboard({ onLogout }) {
         setEditBody(noteToEdit.body)
     }
 
-    const updateNote = async (e) => {
-        e.preventDefault()
+    const updateNote = async (noteId) => {
         try {
             const token = localStorage.getItem('authToken');
             
-            const response = await fetch(`${API_BASE_URL}/notes/${editingId}`, {
+            const response = await fetch(`${API_BASE_URL}/notes/${noteId}`, {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -240,10 +239,21 @@ function Dashboard({ onLogout }) {
             })
             const data = await response.json()
             if (data.success) {
+                
+                setNotes(prevNotes => 
+                    prevNotes.map(note => 
+                        note._id === noteId
+                            ? { 
+                                ...note,
+                                title: editTitle, 
+                                body: editBody 
+                              }
+                            : note
+                    )
+                )
                 setEditTitle('')
                 setEditBody('')
                 setEditingId(null)
-                fetchNotes()
                 showMessage('Note updated successfully!', 'success')
             } else {
                 showMessage('Failed to update note', 'error')
@@ -268,7 +278,7 @@ function Dashboard({ onLogout }) {
             })
             const data = await response.json()
             if (data.success) {
-                fetchNotes()
+                setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId))
                 showMessage('Note deleted successfully!', 'success')
             }
         } catch (error) {

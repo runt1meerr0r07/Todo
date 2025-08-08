@@ -1,194 +1,219 @@
 .draggable-notes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  padding: 16px 0;
+  gap: 20px;
+  padding: 20px 0;
 }
 
 .draggable-note-card {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 20px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px var(--shadow-light);
+  transition: all 0.3s ease;
   position: relative;
-  user-select: none;
+  min-height: 150px;
 }
 
 .draggable-note-card:hover {
-  box-shadow: 0 4px 8px var(--shadow-medium);
-  transform: translateY(-2px);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .draggable-note-card.dragging {
   opacity: 0.5;
-  transform: rotate(5deg);
-  z-index: 1000;
+  transform: scale(1.05);
 }
 
 .draggable-note-card.drag-over {
-  border-color: var(--accent-color);
-  background-color: var(--hover-color);
-  transform: scale(1.02);
+  border-color: #007acc;
+  box-shadow: 0 0 20px rgba(0, 122, 204, 0.3);
 }
 
 .drag-handle {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 4px;
+  top: 10px;
+  right: 10px;
   cursor: grab;
-  color: var(--text-secondary);
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  padding: 5px;
+  border-radius: 5px;
+  transition: all 0.2s ease;
 }
 
-.draggable-note-card:hover .drag-handle {
-  opacity: 1;
+.drag-handle:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .drag-handle:active {
   cursor: grabbing;
 }
 
-.drag-dots {
-  font-size: 16px;
+.drag-dots span {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
   line-height: 1;
 }
 
 .note-content {
-  margin-bottom: 12px;
+  padding-right: 40px;
+  padding-bottom: 50px; 
 }
 
 .note-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-  line-height: 1.4;
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #ffffff;
+  word-wrap: break-word;
 }
 
 .note-body {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 12px;
+  margin: 0 0 15px 0;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+  word-wrap: break-word;
+  max-height: 100px;
+  overflow: hidden;
 }
 
-.note-media {
-  margin: 12px 0;
-}
-
-.note-image, .note-drawing {
-  width: 100%;
-  max-height: 200px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-}
-
-.note-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  opacity: 0;
-  transition: opacity 0.2s ease;
+.draggable-note-card .note-actions {
+  display: flex !important;
+  gap: 4px !important;
+  opacity: 0 !important; /* Hidden by default */
+  transition: opacity 0.2s ease !important;
+  position: absolute !important;
+  bottom: 8px !important;
+  right: 8px !important;
 }
 
 .draggable-note-card:hover .note-actions {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
-.btn-icon {
-  background: none;
-  border: none;
-  padding: 8px;
-  border-radius: 50%;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
-  font-size: 14px;
+.draggable-note-card .btn-icon {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.2s ease !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
 }
 
-.btn-icon:hover {
-  background-color: var(--hover-color);
-  color: var(--text-primary);
+.draggable-note-card .btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  transform: scale(1.1);
 }
 
-.btn-icon.btn-danger:hover {
-  background-color: var(--danger-color);
-  color: white;
+.draggable-note-card .edit-btn:hover {
+  background-color: rgba(0, 122, 204, 0.8) !important;
 }
 
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.draggable-note-card .delete-btn:hover {
+  background-color: rgba(220, 53, 69, 0.8) !important;
 }
 
-.edit-input, .edit-textarea {
+.note-edit-form {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid var(--border-color);
+}
+
+.edit-title,
+.edit-body {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 6px;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: inherit;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
   font-size: 14px;
 }
 
-.edit-input {
-  height: 36px;
-}
-
-.edit-textarea {
-  min-height: 80px;
-  resize: vertical;
+.edit-title::placeholder,
+.edit-body::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .edit-actions {
   display: flex;
-  gap: 8px;
-  justify-content: flex-end;
+  gap: 10px;
 }
 
-.btn-small {
-  padding: 6px 12px;
+.save-btn,
+.cancel-btn {
+  padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  font-size: 12px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
 
-.btn-save {
-  background-color: var(--accent-color);
+.save-btn {
+  background: #28a745;
   color: white;
 }
 
-.btn-save:hover {
-  background-color: var(--accent-hover);
+.save-btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
 }
 
-.btn-cancel {
-  background-color: var(--text-secondary);
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
   color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.btn-cancel:hover {
-  background-color: var(--text-primary);
+.cancel-btn:hover {
+  background: rgba(220, 53, 69, 0.8);
+  border-color: #dc3545;
+  transform: translateY(-1px);
 }
 
 .empty-state {
-  grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .empty-icon {
   font-size: 48px;
   margin-bottom: 16px;
+}
+
+
+.note-media {
+    margin: 10px 0;
+    max-width: 100%;
+}
+
+.note-image, .note-drawing {
+    width: 100%;
+    max-height: 120px; 
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.note-image:hover, .note-drawing:hover {
+    transform: scale(1.02);
+}
+
+.draggable-note-card.dragging .note-image,
+.draggable-note-card.dragging .note-drawing {
+    pointer-events: none;
 }

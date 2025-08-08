@@ -7,17 +7,26 @@ const noteSchema=new Schema({
         required:true
     },
     body:{
-        type:String
+        type:String,
+        required:false, 
+        default:""      
     },
     image:{
-        type:String
+        type:String,
+        default:null
     },
     drawing:{
-        type:String
+        type:String,
+        default:null
+    },
+    position:{
+        type:Number,
+        default:0
     },
     owner:{
         type:Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required:true
     }},
     {
         timestamps:true
