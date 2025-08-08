@@ -45,3 +45,5 @@ Thumbs.db
 *.pem
 *.key
 .secrets/
+
+chrome-extension/

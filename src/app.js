@@ -3,24 +3,25 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 const app = express()
 
+const allowedOrigins = [
+   'chrome-extension://amgjhfchgehamjoppcfannlakllkbbaf',
+    'http://localhost:3000',
+  'https://todo-lk1c.onrender.com',
+  /^chrome-extension:\/\/[\w-]+$/ 
+];
 
 app.use(cors({
-    origin: (origin, callback) => {
-        
-        if (!origin) return callback(null, true);
-        
-        if (origin.includes('localhost') || 
-            origin.includes('vercel.app') || 
-            origin.includes('onrender.com')) {
-            return callback(null, true);
-        }
-      
-        callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-    optionsSuccessStatus: 200
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.some(o =>
+      typeof o === 'string' ? o === origin : o.test(origin)
+    )) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }))
 
 app.use((req, res, next) => {
