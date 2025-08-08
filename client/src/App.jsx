@@ -1,5 +1,6 @@
 import { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
+import './App.css'
 import Login from './components/Login'
 import Register from './components/Register'
 import Dashboard from './components/Dashboard'
@@ -12,17 +13,36 @@ function App() {
 
   const checkAuth = async () => {
     try {
+      const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        setIsLoggedIn(false);
+        setLoading(false);
+        return;
+      }
+      
       const response = await fetch(`${API_BASE_URL}/auth/check`, {
         method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         credentials: 'include'
       })
-      const data = await response.json()
-      setIsLoggedIn(data.success)
+      
+      if (response.ok) {
+        const data = await response.json()
+        setIsLoggedIn(data.success)
+      } else {
+        localStorage.removeItem('authToken');
+        setIsLoggedIn(false);
+      }
     } 
     catch (error) 
     {
       setIsLoggedIn(false)
-      console.log(error)
+      localStorage.removeItem('authToken'); 
+      console.log('Auth check failed:', error)
     } 
     finally 
     {
@@ -34,26 +54,47 @@ function App() {
     checkAuth()
   }, [])
 
-  if (loading) return <div>Loading...</div>
-
-  if (isLoggedIn) {
-    return <Dashboard onLogout={() => setIsLoggedIn(false)} />
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true)
+    setShowRegister(false)
   }
 
-  if (showRegister) {
+  const handleLogout = () => {
+    localStorage.removeItem('authToken'); 
+    setIsLoggedIn(false)
+  }
+
+  const handleRegisterSuccess = () => {
+    setShowRegister(false)
+  }
+
+  if (loading) {
     return (
-      <Register 
-        onRegisterSuccess={() => setShowRegister(false)}
-        onSwitchToLogin={() => setShowRegister(false)}
-      />
+      <div className="loading-screen">
+        <div className="loading-spinner">📋</div>
+        <p>Loading...</p>
+      </div>
     )
   }
 
+  if (isLoggedIn) {
+    return <Dashboard onLogout={handleLogout} />
+  }
+
   return (
-    <Login 
-      onLoginSuccess={() => setIsLoggedIn(true)}
-      onSwitchToRegister={() => setShowRegister(true)}
-    />
+    <div className="app">
+      {showRegister ? (
+        <Register 
+          onRegisterSuccess={handleRegisterSuccess} 
+          onSwitchToLogin={() => setShowRegister(false)}
+        />
+      ) : (
+        <Login 
+          onLoginSuccess={handleLoginSuccess} 
+          onSwitchToRegister={() => setShowRegister(true)}
+        />
+      )}
+    </div>
   )
 }
 

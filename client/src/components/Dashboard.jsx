@@ -25,8 +25,14 @@ function Dashboard({ onLogout }) {
 
     const getTheme = async() => {
         try {
+            const token = localStorage.getItem('authToken');
+            
             const response = await fetch(`${API_BASE_URL}/user/theme`, {
                 method:'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 credentials:'include'
             })
             const data = await response.json()
@@ -42,9 +48,14 @@ function Dashboard({ onLogout }) {
 
     const saveTheme = async (darkMode) => {
         try {
+            const token = localStorage.getItem('authToken');
+            
             await fetch(`${API_BASE_URL}/user/theme`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 credentials: 'include',
                 body: JSON.stringify({ darkMode })
             });
@@ -253,15 +264,23 @@ function Dashboard({ onLogout }) {
 
     const handleLogout = async () => {
         try {
+            const token = localStorage.getItem('authToken');
+            
             await fetch(`${API_BASE_URL}/auth/logout`, {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'include'
             })
-            localStorage.removeItem('theme')
+            
+            localStorage.removeItem('authToken'); 
+            localStorage.removeItem('theme'); 
             onLogout()
-            showMessage('Logged out successfully!', 'success')
         } catch (error) {
             console.log('Logout error:', error)
+            localStorage.removeItem('authToken'); 
             localStorage.removeItem('theme')
             onLogout()
         }
